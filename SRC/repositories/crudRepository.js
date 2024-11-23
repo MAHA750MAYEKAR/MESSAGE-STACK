@@ -1,7 +1,10 @@
 export default function crudRepository(model) {
   return {
     create: async function (data) {
+      console.log('data12', data);
+      console.log('model', model);
       const newUser = await model.create(data);
+      console.log('newUser12', newUser);
       return newUser;
     },
     findAll: async function () {
