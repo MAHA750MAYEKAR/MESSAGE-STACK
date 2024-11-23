@@ -14,7 +14,7 @@ export const userSignUpService = async function (data) {
     }
 
     // Attempt to create a new user
-    const newUser = await createUser(data);
+    const newUser = await userRepository.create(data);
 
     if (!newUser) {
       throw new Error('Failed to create the user.');
