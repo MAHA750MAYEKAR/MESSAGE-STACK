@@ -31,7 +31,8 @@ export const userSignUpController = async (req, res) => {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: 'false',
       data: {},
-      message: error.message
+      message: error.message,
+      error:error.errors
     });
   }
 };
