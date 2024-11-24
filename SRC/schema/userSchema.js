@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
       unique: [true, 'This email is already present'],
       match: [
         /^[\w.-]+@([\w-]+\.)+[a-zA-Z]{2,}$/,
-       'Please enter a valid email address'
+        'Please enter a valid email address'
       ]
     },
     password: {
@@ -41,7 +41,6 @@ userSchema.pre('save', function saveUser(next) {
   user.avatar = `https://robohash.org/${user.username}`;
   next();
 });
-
 
 const User = mongoose.model('User', userSchema);
 

@@ -19,8 +19,8 @@ export default userRepository;
 export const createUser = async function (data) {
   try {
     const user = await User.create(data);
-    console.log("data from repository",data);
-    
+    console.log('data from repository', data);
+
     return user;
   } catch (error) {
     console.log('err in creating new user', error);

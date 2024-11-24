@@ -5,6 +5,6 @@ import { signUpZodSchema } from '../../validation/signUpZodValidationSchema.js';
 
 const router = express.Router();
 
-router.post('/signup',validator(signUpZodSchema), userSignUpController);
+router.post('/signup', validator(signUpZodSchema), userSignUpController);
 
 export default router;

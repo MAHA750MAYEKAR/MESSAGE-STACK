@@ -5,10 +5,8 @@ import { successResponse } from '../utils/common/succesResponse.js';
 export const userSignUpController = async (req, res) => {
   try {
     const { email, password, username } = req.body;
-    console.log("email:",email,"password:",password,"username:",username);
-    
+    console.log('email:', email, 'password:', password, 'username:', username);
 
-   
     if (!email || !password || !username) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
@@ -32,7 +30,7 @@ export const userSignUpController = async (req, res) => {
       success: 'false',
       data: {},
       message: error.message,
-      error:error.errors
+      error: error.errors
     });
   }
 };
