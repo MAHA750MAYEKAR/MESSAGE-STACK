@@ -1,4 +1,7 @@
-import { userSignUpService } from '../service/userService.js';
+import {
+  userSignInService,
+  userSignUpService
+} from '../service/userService.js';
 import { StatusCodes } from 'http-status-codes';
 import { successResponse } from '../utils/common/succesResponse.js';
 
@@ -26,6 +29,27 @@ export const userSignUpController = async (req, res) => {
       .json(successResponse(newUser, 'user is created successfully'));
   } catch (error) {
     console.log('user controller error', error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: 'false',
+      data: {},
+      message: error.message,
+      error: error.errors
+    });
+  }
+};
+
+export const userSignIn = async (req, res) => {
+  try {
+    const response = await userSignInService(req.body);
+    if (!response) {
+      console.log('no response in controller singn in');
+    }
+
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, 'user signed in successfully'));
+  } catch (error) {
+    console.log('user controller sign in', error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: 'false',
       data: {},

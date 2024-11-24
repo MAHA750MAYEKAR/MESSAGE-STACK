@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import userRepository from '../repositories/userRepository.js';
 import ClientErrors from '../utils/errors/clientErrors.js';
 import bcrypt from 'bcrypt';
-import genToken from '../utils/JWTtoken/genToken.js';
+import {JWTtoken} from '../utils/JWTtoken/genToken.js';
 
 export const userSignUpService = async function (data) {
   try {
@@ -55,7 +55,7 @@ export const userSignInService = async (data) => {
     if (!isMatch) {
       throw new ClientErrors({
         message: 'Invalid password please try again',
-        Explanation: 'Invalid data senr=t by the user',
+        Explanation: 'Invalid data sent by the user',
         StatusCode: StatusCodes.BAD_REQUEST
       });
     }
@@ -64,7 +64,7 @@ export const userSignInService = async (data) => {
       username: userExist.username,
       avatar: userExist.avatar,
       email: userExist.email,
-      Token: genToken({
+      Token: JWTtoken({
         id: userExist.id,
         email: userExist.email
       })
