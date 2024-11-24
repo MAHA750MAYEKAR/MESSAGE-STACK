@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import userRepository from '../repositories/userRepository.js';
 import ClientErrors from '../utils/errors/clientErrors.js';
 import bcrypt from 'bcrypt';
-import {JWTtoken} from '../utils/JWTtoken/genToken.js';
+import { JWTtoken } from '../utils/JWTtoken/genToken.js';
 
 export const userSignUpService = async function (data) {
   try {
