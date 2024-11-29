@@ -20,13 +20,13 @@ const messageSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Sender ID is required']
     },
-    workspaceId:{
-      type:mongoose.Schema.Types.ObjectId,
-      ref:"Workspace",
-      required:[true,'workspace ID required']
+    workspaceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Workspace',
+      required: [true, 'workspace ID required']
     }
   },
   { timestamps: true }
 );
 
-export const Message=mongoose.model("Message",messageSchema)
+export const Message = mongoose.model('Message', messageSchema);
