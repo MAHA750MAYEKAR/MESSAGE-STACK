@@ -1,13 +1,17 @@
-import { workspaceService } from '../service/workspaceService';
+import { workspaceService } from '../service/workspaceService.js';
 import { StatusCodes } from 'http-status-codes';
-import { successResponse } from '../utils/common/succesResponse';
+import { successResponse } from '../utils/common/succesResponse.js';
 
-export const workspaceController = async (req, res) => {
+export const createworkspaceController = async (req, res) => {
   try {
-    const response = await workspaceService({
-      ...req.body,
-      owner: req.user
-    });
+     
+      const datatype={...req.body,owner:req.user}
+      console.log("datatype",datatype);
+      
+    const response = await workspaceService(datatype);
+   
+
+    
 
     return res
       .status(StatusCodes.CREATED)

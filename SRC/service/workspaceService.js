@@ -16,6 +16,6 @@ export const workspaceService = async function (workspaceObject) {
     'admin'
   );
 
-  await workspaceRepository.addChannelToWorkspace(workspace._id, 'general');
-  return workspace;
+  const updatedWorkspace= await workspaceRepository.addChannelToWorkspace(workspace._id, 'general');
+  return updatedWorkspace;
 };
