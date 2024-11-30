@@ -2,7 +2,7 @@ import { workspaceRepository } from '../repositories/workspaceRepository.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export const workspaceService = async function (workspaceObject) {
-  const joinCode = uuidv4().substring(0, 6);
+  const joinCode = uuidv4().substring(0, 6).toUpperCase();
 
   const workspace = await workspaceRepository.create({
     name: workspaceObject.name,
