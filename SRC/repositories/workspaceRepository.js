@@ -63,6 +63,11 @@ export const workspaceRepository = {
         statusCode: StatusCodes.NOT_FOUND
       });
     }
+    workspace.members.push({
+      memberId,
+      role
+    });
+
     await workspace.save();
     return workspace;
   },
@@ -91,5 +96,12 @@ export const workspaceRepository = {
     workspace.channels.push(channel);
     await workspace.save();
     return workspace;
+  },
+  fetchAllWorkspaceByMemberId: async function (memberId) {
+    const workspaces = await Workspace.find({
+      'members.memberId': memberId
+    }).populate('members.memberId', 'username email avatar');
+
+    return workspaces;
   }
 };
