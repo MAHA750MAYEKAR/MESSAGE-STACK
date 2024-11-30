@@ -44,9 +44,11 @@ export const workspaceRepository = {
     }
 
     const isUserValid = await User.findById(memberId);
+    console.log("isUserValid",isUserValid);
+    
     if (!isUserValid) {
       throw new ClientErrors({
-        message: 'The user is invalid',
+        message: 'The user is invalid already',
         explanation: 'Invalid data sent by the user',
         statusCode: StatusCodes.NOT_FOUND
       });
@@ -80,11 +82,10 @@ export const workspaceRepository = {
         statusCode: StatusCodes.NOT_FOUND
       });
     }
-    const isChannelAlreadyPartOfWorkspace = Workspace.channels.find(
-      (channel) => {
-        channel.name === channelName;
-      }
+    const isChannelAlreadyPartOfWorkspace = workspace.channels.find(
+      (channel) => channel.name === channelName
     );
+    
     if (isChannelAlreadyPartOfWorkspace) {
       throw new ClientErrors({
         message: 'The channel is already part of workspace',

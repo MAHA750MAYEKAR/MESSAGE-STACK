@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config/serverConfig.js';
-import userRepository from '../repositories/userRepository';
+import userRepository from '../repositories/userRepository.js';
 
 export const authMiddleware = async (req, res, next) => {
   try {
@@ -27,7 +27,9 @@ export const authMiddleware = async (req, res, next) => {
     console.log('id:', isTokenValid.id);
 
     const user = await userRepository.findById(isTokenValid.id);
-    user.req = user.id;
+    req.user = user.id;
+    console.log("req.user = user.id",req.user );
+    
     next();
   } catch (error) {
     console.log('error in auth middleware', error);
