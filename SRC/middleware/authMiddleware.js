@@ -28,8 +28,8 @@ export const authMiddleware = async (req, res, next) => {
 
     const user = await userRepository.findById(isTokenValid.id);
     req.user = user.id;
-    console.log("req.user = user.id",req.user );
-    
+    console.log('req.user = user.id', req.user);
+
     next();
   } catch (error) {
     console.log('error in auth middleware', error);

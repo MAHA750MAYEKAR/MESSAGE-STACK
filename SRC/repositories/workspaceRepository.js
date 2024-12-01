@@ -12,6 +12,7 @@ export const workspaceRepository = {
     const workspace = await Workspace.findOne({
       name: workspaceName
     });
+
     if (!workspace) {
       throw new ClientErrors({
         Message: 'Workspace not found',
@@ -44,8 +45,8 @@ export const workspaceRepository = {
     }
 
     const isUserValid = await User.findById(memberId);
-    console.log("isUserValid",isUserValid);
-    
+    console.log('isUserValid', isUserValid);
+
     if (!isUserValid) {
       throw new ClientErrors({
         message: 'The user is invalid already',
@@ -54,9 +55,9 @@ export const workspaceRepository = {
       });
     }
 
-    const isMemberAlreadyPartOfWorkspace = workspace.members.find((member) => {
-      member.memberId == memberId;
-    });
+    const isMemberAlreadyPartOfWorkspace = workspace.members.find(
+      (member) => member.memberId == memberId
+    );
 
     if (isMemberAlreadyPartOfWorkspace) {
       throw new ClientErrors({
@@ -85,7 +86,7 @@ export const workspaceRepository = {
     const isChannelAlreadyPartOfWorkspace = workspace.channels.find(
       (channel) => channel.name === channelName
     );
-    
+
     if (isChannelAlreadyPartOfWorkspace) {
       throw new ClientErrors({
         message: 'The channel is already part of workspace',
