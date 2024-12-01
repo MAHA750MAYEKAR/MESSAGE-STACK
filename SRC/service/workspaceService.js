@@ -4,7 +4,6 @@ import ClientErrors from '../utils/errors/clientErrors.js';
 import { StatusCodes } from 'http-status-codes';
 import { Workspace } from '../schema/workspaceSchema.js';
 import channelRepository from '../repositories/channelRepository.js';
-import mongoose from 'mongoose';
 
 export const workspaceService = async function (workspaceObject) {
   try {
@@ -72,6 +71,38 @@ export const deleteWorkspaceService = async function (workspaceId, userId) {
     });
   } catch (error) {
     console.log('deleting workspace');
+    throw new Error(error);
+  }
+};
+
+export const getWorkspacesService = async function (workspaceId, userId) {
+  //user should have access to workspace he is part of
+  try {
+    const workspace = await workspaceRepository.getById(workspaceId);
+    if (!workspace) {
+      throw new ClientErrors({
+        message: 'Workspace not found ',
+        explanation: 'Invalid data',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+
+    const isUserPartOfWorkspace = workspace.members.find(
+      (member) => member.memberId.toString() === userId
+    );
+
+    if (isUserPartOfWorkspace) {
+      const response = await workspaceRepository.findAll(workspaceId);
+
+      return response;
+    }
+    throw new ClientErrors({
+      message: 'The user is not  part of the workpace',
+      explanation: 'cannot fetch data',
+      statusCode: StatusCodes.UNAUTHORIZED
+    });
+  } catch (error) {
+    console.log('get workspace===>');
     throw new Error(error);
   }
 };

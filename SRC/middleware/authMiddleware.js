@@ -24,11 +24,9 @@ export const authMiddleware = async (req, res, next) => {
     }
 
     //since is token is valid it will hv id in object
-    console.log('id:', isTokenValid.id);
 
     const user = await userRepository.findById(isTokenValid.id);
     req.user = user.id;
-    console.log('req.user = user.id', req.user);
 
     next();
   } catch (error) {
