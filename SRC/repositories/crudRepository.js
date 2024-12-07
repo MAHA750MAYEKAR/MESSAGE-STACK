@@ -9,6 +9,7 @@ export default function crudRepository(model) {
       const allDocs = await model.find();
       return allDocs;
     },
+
     findById: async function (id) {
       const doc = await model.findById(id);
       return doc;
@@ -37,6 +38,10 @@ export default function crudRepository(model) {
     },
     delete: async function (id) {
       const response = await model.findByIdAndDelete(id);
+      return response;
+    },
+    findOne: async function (data) {
+      const response = await model.findOne(data);
       return response;
     }
   };

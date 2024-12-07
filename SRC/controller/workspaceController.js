@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { successResponse } from '../utils/common/succesResponse.js';
 import { deleteWorkspaceService } from '../service/workspaceService.js';
 import { getWorkspacesService } from '../service/workspaceService.js';
+import { getWorkspaceByJoincodeService } from '../service/workspaceService.js';
 
 export const createworkspaceController = async (req, res) => {
   try {
@@ -70,6 +71,21 @@ export const getWorkspacesController = async function (req, res) {
       .json(successResponse(response, 'Successfully fetched all workspaces'));
   } catch (error) {
     console.log('workspace controller', error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: 'false',
+      data: {},
+      message: error.message,
+      error: error.errors
+    });
+  }
+};
+
+export const getWorkspaceByJoincodeController = async function (req, res) {
+  try {
+    const response = await getWorkspaceByJoincodeController();
+    return response;
+  } catch (error) {
+    console.log('get workspace by joincode controller', error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: 'false',
       data: {},

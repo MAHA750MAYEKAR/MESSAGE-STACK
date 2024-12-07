@@ -106,3 +106,152 @@ export const getWorkspacesService = async function (workspaceId, userId) {
     throw new Error(error);
   }
 };
+
+export const getWorkspaceByJoincodeService = async function (joincode, userId) {
+  try {
+    const workspace =
+      await workspaceRepository.getWorkspaceByJoinCode(joincode);
+    if (!workspace) {
+      throw new ClientErrors({
+        message: 'Workspace not found ',
+        explanation: 'Invalid data',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+    const isUserPartOfWorkspace = workspace.members.find(
+      (member) => member.memberId.toString() === userId
+    );
+    if (!isUserPartOfWorkspace) {
+      throw new ClientErrors({
+        message: 'user is not member of workspace',
+        explanation: 'user is not member of workspace ',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+
+    return workspace;
+  } catch (error) {
+    console.log('get workspace by join code===>');
+    throw new Error(error);
+  }
+};
+
+export const updateWorkspaceService = async function (
+  workspaceId,
+  userId,
+  updateObject
+) {
+  try {
+    const workspace = await workspaceRepository.getById(workspaceId);
+    if (!workspace) {
+      throw new ClientErrors({
+        message: 'Workspace not found ',
+        explanation: 'Invalid data',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+    const isUserPartOfWorkspace = workspace.members.find(
+      (member) => member.memberId === userId && member.role === 'admin'
+    );
+    if (isUserPartOfWorkspace) {
+      updatedWorkspace = await workspaceRepository.updateById(
+        workspaceId,
+        updateObject
+      );
+      return updatedWorkspace;
+    }
+  } catch (error) {
+    console.log('error in updating workspace');
+    throw new Error(error);
+  }
+};
+
+export const addMembersToWorkspaceService = async function (
+  workspaceId,
+  userId,
+  role
+) {
+  try {
+    const workspace = await workspaceRepository.getById(workspaceId);
+    if (!workspace) {
+      throw new ClientErrors({
+        message: 'Workspace not found ',
+        explanation: 'Invalid data',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+    // Check if the user is an admin in the workspace
+    const isUserAdmin = workspace.members.find(
+      (member) => member.memberId === userId && member.role === 'admin'
+    );
+
+    if (!isUserAdmin) {
+      throw new ClientErrors({
+        message: 'Permission denied',
+        explanation: 'Only admins can add members to the workspace',
+        statusCode: StatusCodes.FORBIDDEN
+      });
+    }
+
+    // Add the member to the workspace
+    const response = await workspaceRepository.addMembersToWorkspace(
+      workspaceId,
+      userId,
+      role
+    );
+    return response;
+  } catch (error) {
+    console.log('error in adding members workspace');
+    throw new Error(error);
+  }
+};
+
+export const addChannelToWorkspace = async function (
+  workspaceId,
+  channelId,
+  userId
+) {
+  try {
+    const workspace =
+      await workspaceRepository.getWorkspaceDetailsById(workspaceId);
+    if (!workspace) {
+      throw new ClientErrors({
+        message: 'Workspace not found ',
+        explanation: 'Invalid data',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+    //only admin can add members
+    const isUserAdmin = workspace.members.find(
+      (member) => member.memberId === userId && member.role === 'admin'
+    );
+    if (!isUserAdmin) {
+      throw new ClientErrors({
+        message: 'Permission denied',
+        explanation: 'Only admins can add channels to the workspace',
+        statusCode: StatusCodes.FORBIDDEN
+      });
+    }
+
+    const isChannelAlreadyPartOfWorkspace = (workspace, channelName) => {
+      return workspace.channels.find(
+        (channel) => channel.name.toUpperCase() === channelName.toUpperCase()
+      );
+    };
+    if (isChannelAlreadyPartOfWorkspace) {
+      throw new ClientErrors({
+        message: 'this channel is already part of this workspace  ',
+        explanation: 'Invalid data',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+    const response = await workspaceRepository.addChannelToWorkspace(
+      workspaceId,
+      channelName
+    );
+    return response;
+  } catch (error) {
+    console.log('error in adding channel workspace');
+    throw new Error(error);
+  }
+};
