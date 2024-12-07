@@ -30,9 +30,12 @@ export const workspaceRepository = {
     return workspace;
   },
   getWorkspaceByJoinCode: async function (joincode) {
+    console.log('recieved joincode at repo', joincode);
+
     const workspace = await Workspace.findOne({
-      joincode
+      joinCode: joincode
     });
+    console.log('recieved workspace at repo', workspace);
     if (!workspace) {
       throw new ClientErrors({
         message: 'Workspace not found',
@@ -40,6 +43,7 @@ export const workspaceRepository = {
         statusCode: StatusCodes.NOT_FOUND
       });
     }
+    return workspace;
   },
   addMembersToWorkspace: async function (workspaceId, memberId, role) {
     const workspace = await Workspace.findById(workspaceId);
@@ -52,7 +56,6 @@ export const workspaceRepository = {
     }
 
     const isUserValid = await User.findById(memberId);
-    console.log('isUserValid', isUserValid);
 
     if (!isUserValid) {
       throw new ClientErrors({
@@ -63,7 +66,7 @@ export const workspaceRepository = {
     }
 
     const isMemberAlreadyPartOfWorkspace = workspace.members.find(
-      (member) => member.memberId == memberId
+      (member) => member.memberId.toString() === memberId
     );
 
     if (isMemberAlreadyPartOfWorkspace) {
@@ -82,7 +85,10 @@ export const workspaceRepository = {
     return workspace;
   },
   addChannelToWorkspace: async function (workspaceId, channelName) {
-    const workspace = await Workspace.findById(workspaceId);
+    const workspace = await Workspace.findById(workspaceId).populate(
+      'channels',
+      'name'
+    );
     if (!workspace) {
       throw new ClientErrors({
         message: 'workspace not found',
@@ -102,8 +108,10 @@ export const workspaceRepository = {
       });
     }
     const channel = await channelRepository.create({ name: channelName });
-    workspace.channels.push(channel);
+    console.log('channel created', channel);
+    workspace.channels.push(channel._id);
     await workspace.save();
+
     return workspace;
   },
   fetchAllWorkspaceByMemberId: async function (memberId) {
