@@ -3,7 +3,7 @@ import { PORT } from './config/serverConfig.js';
 import connectDB from './config/DBConfig.js';
 import { StatusCodes } from 'http-status-codes';
 import apiRoutes from './routes/apiRoutes.js';
-import { transporter } from './config/mailConfig.js';
+import bullServerAdapter from './config/bullboardConfig.js';
 
 const app = express();
 // Middleware to parse incoming JSON requests
@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api', apiRoutes);
+app.use('/ui', bullServerAdapter.getRouter());
 
 app.get('/ping', (req, res) => {
   res.status(StatusCodes.OK).json({
