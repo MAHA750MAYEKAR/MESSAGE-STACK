@@ -3,6 +3,7 @@ import { PORT } from './config/serverConfig.js';
 import connectDB from './config/DBConfig.js';
 import { StatusCodes } from 'http-status-codes';
 import apiRoutes from './routes/apiRoutes.js';
+import { transporter } from './config/mailConfig.js';
 
 const app = express();
 // Middleware to parse incoming JSON requests
@@ -20,7 +21,7 @@ app.get('/ping', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log('server is listening on port', PORT);
   connectDB();
 });

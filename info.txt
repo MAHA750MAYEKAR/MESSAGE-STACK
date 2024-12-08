@@ -1,0 +1,8 @@
+const info = await transporter.sendMail({
+    from: 'mahananda.mayekar8080@gmail.com', // sender address
+    to: "mayekardiksha750@gmail.com", // list of receivers
+    subject: "Hello ✔", // Subject line
+    text: "Hello world?", // plain text body
+    
+  });
+  console.log(info);
