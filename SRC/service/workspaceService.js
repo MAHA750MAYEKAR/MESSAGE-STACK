@@ -5,7 +5,8 @@ import { StatusCodes } from 'http-status-codes';
 import { Workspace } from '../schema/workspaceSchema.js';
 import channelRepository from '../repositories/channelRepository.js';
 import userRepository from '../repositories/userRepository.js';
-import { populate } from 'dotenv';
+import { addEmailToMailQueue } from '../producer/mailQueueProducer.js';
+import { mailObject } from '../utils/common/mailObject.js';
 
 export const workspaceService = async function (workspaceObject) {
   try {
@@ -216,6 +217,10 @@ export const addMembersToWorkspaceService = async function (
       userId,
       role
     );
+    addEmailToMailQueue({
+      ...mailObject(workspace),
+      to: 'mayekardiksha750@gmail.com'
+    }); //to:"isValidUser.email"
     return response;
   } catch (error) {
     console.log('error in adding members workspace');
