@@ -1,5 +1,5 @@
 import crudRepository from './crudRepository.js';
-import Message from '../schema/messageSchema.js';
+import { Message } from '../schema/messageSchema.js';
 
 export const messageRepository = {
   ...crudRepository(Message),

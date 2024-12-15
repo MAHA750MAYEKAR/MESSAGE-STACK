@@ -48,3 +48,8 @@ export const getMessagesService = async (
     throw new Error(error);
   }
 };
+
+export const createMessage = async (messageObject) => {
+  const newMessage = await messageRepository.create(messageObject);
+  return newMessage;
+};
