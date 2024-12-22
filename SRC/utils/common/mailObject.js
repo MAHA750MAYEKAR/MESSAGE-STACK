@@ -4,6 +4,6 @@ export const mailObject = function (workspace) {
   return {
     from: MAIL_ID,
     subject: 'You have been added to a Workspace',
-    text: `Congratulation!!  You have been added to${workspace.name} `
+    text: `Congratulation!!  You have been added to ${workspace.name} `
   };
 };

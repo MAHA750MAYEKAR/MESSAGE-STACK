@@ -5,6 +5,8 @@ import { StatusCodes } from 'http-status-codes';
 
 export const getChannelByIdController = async function (req, res) {
   try {
+    console.log("req.body in controller------>",req.body);
+    
     const response = await getChannelByIdService(req.params.channelId);
     if (!response) {
       throw new ClientErrors({
@@ -13,6 +15,7 @@ export const getChannelByIdController = async function (req, res) {
         statusCode: StatusCodes.NOT_FOUND
       });
     }
+    console.log('Channel', response);
     return res
       .status(StatusCodes.OK)
       .json(

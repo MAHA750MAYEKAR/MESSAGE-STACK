@@ -45,7 +45,7 @@ export const workspaceRepository = {
     }
     return workspace;
   },
-  addMembersToWorkspace: async function (workspaceId, memberId, role) {
+  addMembersToWorkspace: async function (workspaceId,userId, role, memberId) {
     const workspace = await Workspace.findById(workspaceId);
     if (!workspace) {
       throw new ClientErrors({
@@ -54,19 +54,18 @@ export const workspaceRepository = {
         statusCode: StatusCodes.NOT_FOUND
       });
     }
+    console.log("here is userid",userId);
+    
 
-    const isUserValid = await User.findById(memberId);
 
-    if (!isUserValid) {
-      throw new ClientErrors({
-        message: 'The user is invalid already',
-        explanation: 'Invalid data sent by the user',
-        statusCode: StatusCodes.NOT_FOUND
-      });
-    }
 
     const isMemberAlreadyPartOfWorkspace = workspace.members.find(
-      (member) => member.memberId.toString() === memberId
+      (member) =>{
+        //console.log("member.memberId.toString().trim()",member.memberId.toString().trim());
+        //console.log("memberId.toString().trim()",memberId.toString().trim());      
+        
+       return  member.memberId.toString().trim() === memberId.toString().trim()
+      }
     );
 
     if (isMemberAlreadyPartOfWorkspace) {

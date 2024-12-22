@@ -12,3 +12,5 @@ export const MAIL_PASSWORD = process.env.MAIL_PASSWORD;
 export const MAIL_ID = process.env.MAIL_ID;
 export const REDIS_HOST = process.env.REDIS_HOST;
 export const REDIS_PORT = process.env.REDIS_PORT;
+export const JOIN_CHANNEL = process.env.JOIN_CHANNEL;
+export const LEAVE_CHANNEL = process.env.LEAVE_CHANNEL;

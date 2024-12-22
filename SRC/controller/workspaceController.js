@@ -142,9 +142,12 @@ export const addMembersToWorkspaceController = async function (req, res) {
   try {
     const response = await addMembersToWorkspaceService(
       req.params.workspaceId,
-      req.user,
-      req.body.role || 'member'
+      req.body.memberId,     
+      req.body.role || 'member',
+      req.user
+    
     );
+    
     if (!response) {
       return res.json({
         message: 'no response at adding members to workspace controller'

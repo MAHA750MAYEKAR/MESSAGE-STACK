@@ -189,8 +189,10 @@ export const updateWorkspaceService = async function (
 
 export const addMembersToWorkspaceService = async function (
   workspaceId,
+  memberId,
+  role,
   userId,
-  role
+
 ) {
   try {
     const workspace = await workspaceRepository.getById(workspaceId);
@@ -201,8 +203,22 @@ export const addMembersToWorkspaceService = async function (
         statusCode: StatusCodes.NOT_FOUND
       });
     }
-    //checking is person ur adding whose id exist or not
-    const isValidUser = await userRepository.getById(userId);
+    const isuserAdmin = workspace.members.find(
+      (member) =>
+        (member.memberId.toString() === userId ||
+          member.memberId._id.toString() === userId) &&
+        member.role === 'admin'
+    );
+    if(!isuserAdmin){
+      throw new ClientErrors({
+        message: 'user is not admin',
+        explanation: 'Invalid data',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+
+    }
+     //checking is person ur adding whose id exist or not
+    const isValidUser = await userRepository.getById(memberId);
     if (!isValidUser) {
       throw new ClientErrors({
         explanation: 'Invalid data sent from the client',
@@ -215,8 +231,10 @@ export const addMembersToWorkspaceService = async function (
     const response = await workspaceRepository.addMembersToWorkspace(
       workspaceId,
       userId,
-      role
+      role,
+      memberId
     );
+   
     addEmailToMailQueue({
       ...mailObject(workspace),
       to: 'mayekardiksha750@gmail.com'

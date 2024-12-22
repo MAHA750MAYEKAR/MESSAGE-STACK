@@ -1,13 +1,13 @@
 import express, { urlencoded } from 'express';
 import { PORT } from './config/serverConfig.js';
 import connectDB from './config/DBConfig.js';
-import messageHandlar from './controller/messageSocketController.js';
 
 import apiRoutes from './routes/apiRoutes.js';
 import bullServerAdapter from './config/bullboardConfig.js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import messageHandler from './controller/messageSocketController.js';
+import channelSocketController from './controller/channelSocketController.js';
 
 const app = express();
 const server = createServer(app);
@@ -29,6 +29,7 @@ io.on('connection', (socket) => {
     io.emit('new message', data.toUpperCase());//collect that message and brodcaste to everyone
   });*/
   messageHandler(io, socket);
+  channelSocketController(io, socket);
 });
 
 server.listen(PORT, async () => {
