@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 
 export const getChannelByIdController = async function (req, res) {
   try {
-    console.log("req.body in controller------>",req.body);
+  
     
     const response = await getChannelByIdService(req.params.channelId);
     if (!response) {

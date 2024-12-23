@@ -50,6 +50,10 @@ export const getMessagesService = async (
 };
 
 export const createMessage = async (messageObject) => {
+  console.log("messageObject",messageObject);
+  
   const newMessage = await messageRepository.create(messageObject);
+  console.log(newMessage);
+  
   return newMessage;
 };
