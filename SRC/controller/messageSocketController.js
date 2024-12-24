@@ -8,7 +8,8 @@ export default function messageHandler(io, socket) {
       console.log("Message created successfully:", response);
       
       const { channelId } = data;
-      io.to(channelId).emit("newMessageRecieved", response);
+      io.to(channelId).emit("newMessageRecieved", response)
+      
   
       cb({
         success: true,
