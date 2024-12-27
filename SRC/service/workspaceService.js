@@ -2,7 +2,6 @@ import { workspaceRepository } from '../repositories/workspaceRepository.js';
 import { v4 as uuidv4 } from 'uuid';
 import ClientErrors from '../utils/errors/clientErrors.js';
 import { StatusCodes } from 'http-status-codes';
-import { Workspace } from '../schema/workspaceSchema.js';
 import channelRepository from '../repositories/channelRepository.js';
 import userRepository from '../repositories/userRepository.js';
 import { addEmailToMailQueue } from '../producer/mailQueueProducer.js';
@@ -16,25 +15,26 @@ export const workspaceService = async function (workspaceObject) {
       name: workspaceObject.name,
       description: workspaceObject.description,
       joinCode
-    });
-
-    await workspaceRepository.addMembersToWorkspace(
+    });  
+    await workspaceRepository.addMembersToWorkspace(//4 parameters
       workspace._id,
-      workspaceObject.owner,
-      'admin'
+       'admin',
+      workspaceObject.owner,//userid,     
     );
 
     const updatedWorkspace = await workspaceRepository.addChannelToWorkspace(
       workspace._id,
       'general'
-    );
+    );  
+    
     return updatedWorkspace;
   } catch (error) {
     console.log('workspace service error', error);
+    throw error
   }
 };
 
-export const getAllUserPartOfWorkspaceService = async function (userId) {
+export const getAllWorkspacesUserIsMemberService = async function (userId) {
   try {
     const response =
       await workspaceRepository.fetchAllWorkspaceByMemberId(userId);
@@ -188,11 +188,10 @@ export const updateWorkspaceService = async function (
 }; // Ensure the catch block is properly closed
 
 export const addMembersToWorkspaceService = async function (
-  workspaceId,
-  memberId,
+  workspaceId,  
   role,
-  userId,
-
+  memberId,
+  userId
 ) {
   try {
     const workspace = await workspaceRepository.getById(workspaceId);
@@ -203,21 +202,25 @@ export const addMembersToWorkspaceService = async function (
         statusCode: StatusCodes.NOT_FOUND
       });
     }
-    const isuserAdmin = workspace.members.find(
-      (member) =>
-        (member.memberId.toString() === userId ||
-          member.memberId._id.toString() === userId) &&
-        member.role === 'admin'
-    );
-    if(!isuserAdmin){
+     const isUserAdmin = workspace.members.find((member) => {
+      console.log("member====>",member);
+
+      console.log(member.memberId.toString(), 'AND===>', userId.toString());
+
+      return (
+        //member._id?.toString() ||
+        (member.memberId.toString() === userId.toString() &&
+          member.role === 'admin')
+      );
+    });
+    if (!isUserAdmin) {
       throw new ClientErrors({
         message: 'user is not admin',
         explanation: 'Invalid data',
         statusCode: StatusCodes.NOT_FOUND
       });
-
     }
-     //checking is person ur adding whose id exist or not
+    //checking is person ur adding whose id exist or not
     const isValidUser = await userRepository.getById(memberId);
     if (!isValidUser) {
       throw new ClientErrors({
@@ -229,12 +232,11 @@ export const addMembersToWorkspaceService = async function (
 
     // Add the member to the workspace
     const response = await workspaceRepository.addMembersToWorkspace(
-      workspaceId,
-      userId,
-      role,
+      workspaceId,     
+      role,      
       memberId
     );
-   
+
     addEmailToMailQueue({
       ...mailObject(workspace),
       to: 'mayekardiksha750@gmail.com'
@@ -252,7 +254,7 @@ export const addChannelToWorkspace = async function (
   userId
 ) {
   try {
-    //console.log("workspaceis:",workspaceId);
+    //console.log('workspaceis:', workspaceId);
 
     const workspace =
       await workspaceRepository.getWorkspaceDetailsById(workspaceId);
@@ -263,18 +265,24 @@ export const addChannelToWorkspace = async function (
         statusCode: StatusCodes.NOT_FOUND
       });
     }
+    //console.log('workspace', workspace);
+
     //only admin can add members
     const isUserAdmin = workspace.members.find((member) => {
-      //console.log(member.memberId._id.toString(),"AND",userId.toString());
+      //console.log("member",member._id);
+
+      // console.log(member, 'AND', userId.toString());
 
       return (
-        member.memberId._id.toString() === userId.toString() &&
-        member.role === 'admin'
+        member._id.toString() ||
+        (member.memberId.toString() === userId.toString() &&
+          member.role === 'admin')
       );
     });
     if (!isUserAdmin) {
       throw new ClientErrors({
-        message: 'Permission denied',
+        message:
+          'Permission denied..Only admins can add channels to the workspace',
         explanation: 'Only admins can add channels to the workspace',
         statusCode: StatusCodes.FORBIDDEN
       });
@@ -298,6 +306,7 @@ export const addChannelToWorkspace = async function (
         statusCode: StatusCodes.NOT_FOUND
       });
     }
+
     const response = await workspaceRepository.addChannelToWorkspace(
       workspaceId,
       channelName

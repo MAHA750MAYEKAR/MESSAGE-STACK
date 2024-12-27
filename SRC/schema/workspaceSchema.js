@@ -28,10 +28,16 @@ const workspaceSchema = new mongoose.Schema({
   },
   channels: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Channel'
-    }
-  ]
+      channelId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Channel',
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 export const Workspace = mongoose.model('Workspace', workspaceSchema);

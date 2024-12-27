@@ -9,10 +9,13 @@ import { deleteWorkspaceService } from '../service/workspaceService.js';
 import { getWorkspacesService } from '../service/workspaceService.js';
 import { getWorkspaceByJoincodeService } from '../service/workspaceService.js';
 import { addChannelToWorkspace } from '../service/workspaceService.js';
+import { getAllWorkspacesUserIsMemberService } from '../service/workspaceService.js';
 
 export const createworkspaceController = async (req, res) => {
   try {
     const datatype = { ...req.body, owner: req.user };
+    console.log("object in controller",datatype);
+    
     if (!datatype.name) {
       return res.json({
         message: 'please add workspace name'
@@ -30,7 +33,7 @@ export const createworkspaceController = async (req, res) => {
       success: 'false',
       data: {},
       message: error.message,
-      error: error.errors
+      explanation: error.explanation
     });
   }
 };
@@ -59,6 +62,32 @@ export const deleteWorkspaceController = async function (req, res) {
     });
   }
 };
+export const getWorkspacesUserIsMemberController = async function (req, res) {
+  try {
+    const response = await getAllWorkspacesUserIsMemberService(
+      req.user
+    );
+
+    if (!response) {
+      return res.json({
+        message: 'no response at get workspace controller'
+      });
+    }
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, 'Successfully fetched all workspaces which user is member'));
+  } catch (error) {
+    console.log('workspace controller', error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: 'false',
+      data: {},
+      message: error.message,
+      error: error.errors
+    });
+  }
+};
+
+
 export const getWorkspacesController = async function (req, res) {
   try {
     const response = await getWorkspacesService(
@@ -142,8 +171,8 @@ export const addMembersToWorkspaceController = async function (req, res) {
   try {
     const response = await addMembersToWorkspaceService(
       req.params.workspaceId,
-      req.body.memberId,     
       req.body.role || 'member',
+      req.body.memberId, 
       req.user
     
     );
@@ -176,8 +205,9 @@ export const addChannelToWorkspaceController = async function (req, res) {
       req.body.channelname,
       req.user
     );
-    console.log('name:', req.body.channelname);
-    console.log('response', response);
+    
+    //console.log('name:', req.body.channelname);
+    //console.log('response', response);
 
     if (!response) {
       return res.json({

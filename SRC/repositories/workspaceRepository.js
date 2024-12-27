@@ -45,7 +45,7 @@ export const workspaceRepository = {
     }
     return workspace;
   },
-  addMembersToWorkspace: async function (workspaceId,userId, role, memberId) {
+  addMembersToWorkspace: async function (workspaceId, role, memberId) {
     const workspace = await Workspace.findById(workspaceId);
     if (!workspace) {
       throw new ClientErrors({
@@ -54,19 +54,23 @@ export const workspaceRepository = {
         statusCode: StatusCodes.NOT_FOUND
       });
     }
-    console.log("here is userid",userId);
     
 
+    const isValidUser = await User.findById(memberId);
+    if (!isValidUser) {
+      throw new ClientErrors({
+        explanation: 'Invalid data sent from the client',
+        message: 'User not found',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
 
-
-    const isMemberAlreadyPartOfWorkspace = workspace.members.find(
-      (member) =>{
-        //console.log("member.memberId.toString().trim()",member.memberId.toString().trim());
-        //console.log("memberId.toString().trim()",memberId.toString().trim());      
-        
-       return  member.memberId.toString().trim() === memberId.toString().trim()
-      }
-    );
+    const isMemberAlreadyPartOfWorkspace = workspace.members.find((member) => {
+      //console.log("member.memberId.toString().trim()",member.memberId.toString().trim());
+      //console.log("memberId.toString().trim()",memberId.toString().trim());
+      return member.memberId.toString().trim() === memberId.toString().trim();
+      
+    });
 
     if (isMemberAlreadyPartOfWorkspace) {
       throw new ClientErrors({
@@ -80,12 +84,12 @@ export const workspaceRepository = {
       role
     });
 
-    await workspace.save();
-    return workspace;
+    const updatedWorkspace= await workspace.save();
+    return updatedWorkspace;
   },
   addChannelToWorkspace: async function (workspaceId, channelName) {
     const workspace = await Workspace.findById(workspaceId).populate(
-      'channels',
+      'channels.channelId',
       'name'
     );
     if (!workspace) {
@@ -106,12 +110,18 @@ export const workspaceRepository = {
         statusCode: StatusCodes.FORBIDDEN
       });
     }
-    const channel = await channelRepository.create({ name: channelName });
-    console.log('channel created', channel);
-    workspace.channels.push(channel._id);
-    await workspace.save();
+    const channel = await channelRepository.create({
+      name: channelName,
+      workspaceId
+    });
+   // console.log('channel created', channel);
+    workspace.channels.push({
+  channelId: channel._id,
+  name: channel.name,
+});
+    const updatedworkspace = await workspace.save();
 
-    return workspace;
+    return updatedworkspace;
   },
   fetchAllWorkspaceByMemberId: async function (memberId) {
     const workspaces = await Workspace.find({

@@ -11,10 +11,12 @@ import { authMiddleware } from '../../middleware/authMiddleware.js';
 import { deleteWorkspaceController } from '../../controller/workspaceController.js';
 import { getWorkspacesController } from '../../controller/workspaceController.js';
 import { addMembersToWorkspaceController } from '../../controller/workspaceController.js';
-
+import { getWorkspacesUserIsMemberController } from '../../controller/workspaceController.js';
+   
 const router = express.Router();
 
 router.post('/', authMiddleware, createworkspaceController);
+router.get('/', authMiddleware,getWorkspacesUserIsMemberController);
 //authMiddleware,validator(workspaceZodSchema)
 router.delete('/:workspaceId', authMiddleware, deleteWorkspaceController);
 router.get('/:workspaceId', authMiddleware, getWorkspacesController);
