@@ -81,7 +81,7 @@ export const deleteWorkspaceService = async function (workspaceId, userId) {
 export const getWorkspacesService = async function (workspaceId, userId) {
   //user should have access to workspace he is part of
   try {
-    const workspace = await workspaceRepository.getById(workspaceId);
+    const workspace = await workspaceRepository.getWorkspaceDetailsById(workspaceId);
     if (!workspace) {
       throw new ClientErrors({
         message: 'Workspace not found ',
@@ -91,19 +91,22 @@ export const getWorkspacesService = async function (workspaceId, userId) {
     }
 
     const isUserPartOfWorkspace = workspace.members.find(
-      (member) => member.memberId.toString() === userId
+      (member) => {
+        console.log("is mem part of w",member);
+        
+        return member.memberId._id.toString() === userId
+      }
     );
 
-    if (isUserPartOfWorkspace) {
-      const response = await workspaceRepository.findAll(workspaceId);
-
-      return response;
-    }
-    throw new ClientErrors({
+    if (!isUserPartOfWorkspace) {
+       throw new ClientErrors({
       message: 'The user is not  part of the workpace',
       explanation: 'cannot fetch data',
       statusCode: StatusCodes.UNAUTHORIZED
     });
+    }
+    return workspace
+   
   } catch (error) {
     console.log('get workspace===>');
     throw new Error(error);
@@ -317,3 +320,39 @@ export const addChannelToWorkspace = async function (
     throw new Error(error);
   }
 };
+
+
+export const joinWorkspaceByJoincode = async (joinCode,workspaceId,memberId) => {
+  try {
+    const workspace =
+      await workspaceRepository.getWorkspaceDetailsById(workspaceId);
+    if (!workspace) {
+      throw new ClientErrors({
+        explanation: 'Invalid data sent from the client',
+        message: 'Workspace not found',
+        statusCode: StatusCodes.NOT_FOUND
+      });
+    }
+    console.log(workspace.joinCode,"&&",joinCode);
+    
+    if (workspace.joinCode !== joinCode) {
+      throw new ClientErrors({
+        explanation: 'Invalid data sent from the client',
+        message: 'invalid Joincode',
+        statusCode: StatusCodes.UNAUTHORIZED
+      });
+    }
+     const updatedWorkspace = await workspaceRepository.addMembersToWorkspace(
+      workspaceId,     
+      "member",      
+      memberId
+     );
+    return updatedWorkspace
+
+
+    
+  } catch (error) {
+     console.log('error in joining ws by joincode',error);
+    throw new Error(error);
+  }
+}

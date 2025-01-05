@@ -12,6 +12,7 @@ import { deleteWorkspaceController } from '../../controller/workspaceController.
 import { getWorkspacesController } from '../../controller/workspaceController.js';
 import { addMembersToWorkspaceController } from '../../controller/workspaceController.js';
 import { getWorkspacesUserIsMemberController } from '../../controller/workspaceController.js';
+import { joinWorkspaceByJoincodeController } from '../../controller/workspaceController.js';
    
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router.get('/', authMiddleware,getWorkspacesUserIsMemberController);
 router.delete('/:workspaceId', authMiddleware, deleteWorkspaceController);
 router.get('/:workspaceId', authMiddleware, getWorkspacesController);
 router.get('/join/:joincode', authMiddleware, getWorkspaceByJoincodeController);
+router.put('/:workspaceId/join', authMiddleware, joinWorkspaceByJoincodeController);
 router.put('/:workspaceId', authMiddleware, updateWorkspaceController);
 router.put(
   '/:workspaceId/members',

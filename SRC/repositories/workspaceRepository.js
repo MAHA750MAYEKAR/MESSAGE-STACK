@@ -64,6 +64,8 @@ export const workspaceRepository = {
         statusCode: StatusCodes.NOT_FOUND
       });
     }
+    console.log("workspace",workspace);
+    
 
     const isMemberAlreadyPartOfWorkspace = workspace.members.find((member) => {
       //console.log("member.memberId.toString().trim()",member.memberId.toString().trim());
@@ -88,10 +90,9 @@ export const workspaceRepository = {
     return updatedWorkspace;
   },
   addChannelToWorkspace: async function (workspaceId, channelName) {
-    const workspace = await Workspace.findById(workspaceId).populate(
-      'channels.channelId',
-      'name'
-    );
+    const workspace = await Workspace.findById(workspaceId).populate('members.memberId', 'username email avatar')
+      
+  
     if (!workspace) {
       throw new ClientErrors({
         message: 'workspace not found',
@@ -117,7 +118,8 @@ export const workspaceRepository = {
    // console.log('channel created', channel);
     workspace.channels.push({
   channelId: channel._id,
-  name: channel.name,
+      name: channel.name,
+  workspaceId:workspace._id
 });
     const updatedworkspace = await workspace.save();
 

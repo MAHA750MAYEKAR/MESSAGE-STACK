@@ -64,6 +64,7 @@ export const userSignInService = async (data) => {
       username: userExist.username,
       avatar: userExist.avatar,
       email: userExist.email,
+      _id:userExist._id,
       Token: JWTtoken({
         id: userExist.id,
         email: userExist.email

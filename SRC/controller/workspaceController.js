@@ -10,6 +10,7 @@ import { getWorkspacesService } from '../service/workspaceService.js';
 import { getWorkspaceByJoincodeService } from '../service/workspaceService.js';
 import { addChannelToWorkspace } from '../service/workspaceService.js';
 import { getAllWorkspacesUserIsMemberService } from '../service/workspaceService.js';
+import { joinWorkspaceByJoincode } from '../service/workspaceService.js';
 
 export const createworkspaceController = async (req, res) => {
   try {
@@ -102,7 +103,7 @@ export const getWorkspacesController = async function (req, res) {
     }
     return res
       .status(StatusCodes.OK)
-      .json(successResponse(response, 'Successfully fetched all workspaces'));
+      .json(successResponse(response, 'Successfully fetched workspace by id'));
   } catch (error) {
     console.log('workspace controller', error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -145,7 +146,7 @@ export const updateWorkspaceController = async function (req, res) {
     const response = await updateWorkspaceService(
       req.params.workspaceId,
       req.user,
-      req.body
+      req.body.joinCode
     );
 
     if (!response) {
@@ -229,3 +230,34 @@ export const addChannelToWorkspaceController = async function (req, res) {
     });
   }
 };
+
+
+export const joinWorkspaceByJoincodeController = async(req,res) => {
+  try {
+    const response = await joinWorkspaceByJoincode(
+      req.body.joinCode,
+      req.params.workspaceId,
+      req.user
+    )
+     if (!response) {
+      return res.json({
+        message: 'no response in joining  workspace by joincode controller'
+      });
+     }
+    return res
+      .status(StatusCodes.OK)
+      .json(
+        successResponse(response, 'Successfullyjoined workspace by joincode')
+      );
+    
+  } catch (error) {
+    console.log('err in joining workspace by joincode', error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: 'false',
+      data: {},
+      message: error.message,
+      error: error.errors
+    });
+    
+  }
+}
