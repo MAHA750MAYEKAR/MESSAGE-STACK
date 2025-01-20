@@ -18,16 +18,17 @@ export const getMessagesService = async (
       );
     if (!channelDetails) {
       throw console.error('channel details not found in service');
-    }
+    }    
+    const workspaceId = channelDetails.workspaceId._id.toString()  
 
-    const workspace = await workspaceRepository.getWorkspaceDetailsById(
-      messageParams.workspaceId
-    );
+   const workspace = await workspaceRepository.getWorkspaceDetailsById(
+   workspaceId
+   )   
 
-    isMemberOfWorkspace = workspace.members.find((member) => {
-      console.log(member.memberId.toString(), '&&', UserId);
+    const isMemberOfWorkspace = workspace.members.find((member) => {
+      console.log(member.memberId._id.toString(), '&&', UserId);
 
-      return member.memberId.toString() === UserId;
+      return member.memberId._id.toString() === UserId;
     });
     if (!isMemberOfWorkspace) {
       throw new ClientErrors({
@@ -45,7 +46,7 @@ export const getMessagesService = async (
     return response;
   } catch (error) {
     console.log('error in fetching messages');
-    throw new Error(error);
+    throw error
   }
 };
 
@@ -53,7 +54,7 @@ export const createMessage = async (messageObject) => {
   console.log("messageObject",messageObject);
   
   const newMessage = await messageRepository.create(messageObject);
-  console.log(newMessage);
+ const messageDetails=await messageRepository.getMessageDetails(newMessage._id)
   
-  return newMessage;
+  return messageDetails;
 };

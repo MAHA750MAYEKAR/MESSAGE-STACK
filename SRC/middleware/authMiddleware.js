@@ -31,10 +31,21 @@ export const authMiddleware = async (req, res, next) => {
     next();
   } catch (error) {
     console.log('error in auth middleware', error);
-    return res.status(StatusCodes.BAD_REQUEST).json({
+    if (error.name === "TokenExpiredError") {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        succes: 'false',
+      message: 'Token expired',
+
+      })
+    }
+    else {
+       return res.status(StatusCodes.BAD_REQUEST).json({
       succes: 'false',
       message: 'middleware error',
       error: error
     });
+      
+    }
+   
   }
 };

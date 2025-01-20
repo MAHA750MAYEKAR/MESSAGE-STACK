@@ -9,8 +9,8 @@ const channelRepository = {
       'name' // Fields to select from the Workspace model (optional)
     );
 
-    console.log('channel in repo', channel);
-    console.log('channel.workspace id in repo', channel.workspaceId);
+   // console.log('channel in repo', channel);
+    //console.log('channel.workspace id in repo', channel.workspaceId);
 
     return channel;
   }

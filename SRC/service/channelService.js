@@ -1,12 +1,13 @@
 import channelRepository from '../repositories/channelRepository.js';
 import ClientErrors from '../utils/errors/clientErrors.js';
 import messageRepository from '../repositories/messageRepository.js';
+import { StatusCodes } from 'http-status-codes';
 
 export const getChannelByIdService = async function (channelId) {
   try {
     const channel =
       await channelRepository.getChannelWithWorkspaceDetails(channelId);
-      console.log("channel in service",channel);
+      //console.log("channel in service",channel);
     
 
     if (!channel) {
@@ -25,7 +26,7 @@ export const getChannelByIdService = async function (channelId) {
       1,
       20
     );
-    console.log('Channel in service', channel,"this are messages",messages);
+    //console.log('Channel in service', channel,"this are messages",messages);
     return {
       messages,
       _id: channel._id,

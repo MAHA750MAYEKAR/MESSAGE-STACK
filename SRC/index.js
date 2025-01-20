@@ -12,7 +12,11 @@ import cors from 'cors'
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin:"*"
+  }
+});
 // Middleware to parse incoming JSON requests
 app.use(express.json());
 app.use(cors())

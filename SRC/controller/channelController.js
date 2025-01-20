@@ -15,7 +15,7 @@ export const getChannelByIdController = async function (req, res) {
         statusCode: StatusCodes.NOT_FOUND
       });
     }
-    console.log('Channel', response);
+    //console.log('Channel', response);
     return res
       .status(StatusCodes.OK)
       .json(
@@ -26,8 +26,6 @@ export const getChannelByIdController = async function (req, res) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: 'false',
       data: {},
-      message: error.message,
-      error: error.errors
     });
   }
 };

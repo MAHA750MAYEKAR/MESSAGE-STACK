@@ -30,12 +30,12 @@ export const workspaceRepository = {
     return workspace;
   },
   getWorkspaceByJoinCode: async function (joincode) {
-    console.log('recieved joincode at repo', joincode);
+    //console.log('recieved joincode at repo', joincode);
 
     const workspace = await Workspace.findOne({
       joinCode: joincode
     });
-    console.log('recieved workspace at repo', workspace);
+    //console.log('recieved workspace at repo', workspace);
     if (!workspace) {
       throw new ClientErrors({
         message: 'Workspace not found',

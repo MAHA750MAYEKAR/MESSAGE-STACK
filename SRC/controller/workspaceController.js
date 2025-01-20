@@ -15,7 +15,7 @@ import { joinWorkspaceByJoincode } from '../service/workspaceService.js';
 export const createworkspaceController = async (req, res) => {
   try {
     const datatype = { ...req.body, owner: req.user };
-    console.log("object in controller",datatype);
+   // console.log("object in controller",datatype);
     
     if (!datatype.name) {
       return res.json({
